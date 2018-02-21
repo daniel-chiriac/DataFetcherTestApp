@@ -1,6 +1,6 @@
 package com.chiriacd.datafetch.network;
 
-import android.content.SharedPreferences;
+import com.chiriacd.datafetch.persistence.DataStore;
 
 import java.io.IOException;
 
@@ -11,36 +11,18 @@ import okhttp3.Response;
 
 public class RootFetchInterceptor implements Interceptor {
 
-    private final static String BASE_URL_KEY = "RootFetchInterceptor.BaseURL";
-    private final static String PORT_KEY = "RootFetchInterceptor.Port";
-
-    private String baseUrl;
+    private String server;
     private int port;
 
-    public RootFetchInterceptor(SharedPreferences preferences) {
-        setBaseUrl(preferences);
-        setPort(preferences);
-        registerObservers(preferences);
-
+    public RootFetchInterceptor(DataStore dataStore) {
+        dataStore.asObservable().subscribe(this::updateServerDetails);
     }
 
-    private void registerObservers(SharedPreferences preferences) {
-        preferences.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
-            if (key.equals(BASE_URL_KEY)) {
-                setBaseUrl(sharedPreferences);
-            } else if (key.equals(PORT_KEY)) {
-                setPort(sharedPreferences);
-            }
-        });
+    private void updateServerDetails(DataStore dataStore) {
+        server = dataStore.getServerAddress();
+        port = dataStore.getPort();
     }
 
-    private void setBaseUrl(SharedPreferences preferences) {
-        baseUrl = preferences.getString(BASE_URL_KEY, "http://localhost");
-    }
-
-    private void setPort(SharedPreferences preferences) {
-        port = preferences.getInt(PORT_KEY, 8000);
-    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -48,7 +30,7 @@ public class RootFetchInterceptor implements Interceptor {
 
         HttpUrl url = new HttpUrl.Builder()
                 .scheme("http")
-                .host(baseUrl)
+                .host(server)
                 .port(port)
                 .build();
 

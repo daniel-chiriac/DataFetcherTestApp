@@ -1,5 +1,6 @@
 package com.chiriacd.datafetch;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     private TextView responseCodeView;
     private TextView timesFetchedView;
+    private TextView serverDetailsView;
 
     @Inject MainPresenter presenter;
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     protected void onPause() {
         super.onPause();
-        presenter.saveData();
+        presenter.persistData();
     }
 
     @Override
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            navigateToServerDetailActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -78,11 +81,22 @@ public class MainActivity extends AppCompatActivity implements MainView {
         timesFetchedView.setText(String.format(getString(R.string.times_fetched), response.getTimesFetched()));
     }
 
+    @Override
+    public void navigateToServerDetailActivity() {
+        startActivity(new Intent(this, ServerDetailActivity.class));
+    }
+
+    @Override
+    public void updateServerDetails(String serverAddress, int port) {
+        serverDetailsView.setText(String.format(getString(R.string.server_details), serverAddress, port));
+    }
+
     private void initUI() {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         timesFetchedView = findViewById(R.id.times_fetched);
         responseCodeView = findViewById(R.id.response_code);
+        serverDetailsView = findViewById(R.id.server_details);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);

@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">DataFetch</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Server details</string>
     <string name="times_fetched">Times fetched: %d</string>
     <string name="title_activity_server_detail">Server Details</string>
 
-    <string name="hint_server_address">http://localhost</string>
-    <string name="hint_port">8000</string>
-    <string name="button_update_server">Update</string>
+    <string name="hint_server_view">Enter server address</string>
+    <string name="hint_port_view">Enter server port</string>
+    <string name="button_update_server">Done</string>
+    <string name="server_details">Server: %s \nPort: %d</string>
 </resources>

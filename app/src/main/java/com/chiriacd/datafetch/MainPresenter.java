@@ -32,6 +32,9 @@ public class MainPresenter {
         this.dataStore = dataStore;
         codesManager = new CodesManager(dataStore.getCodeMap());
         disposable = new CompositeDisposable();
+        disposable.add(dataStore
+                .asObservable()
+                .subscribe(dataStore1 -> mainView.updateServerDetails(dataStore1.getServerAddress(), dataStore1.getPort())));
     }
 
     public void refreshData() {
@@ -56,12 +59,16 @@ public class MainPresenter {
         lastResponse = response;
     }
 
-    public void saveData() {
+    public void persistData() {
         dataStore.saveCodeMap(codesManager.getData());
     }
 
     public void attachView(MainView mainView) {
         this.mainView = mainView;
+        if (dataStore.isFirstRun()) {
+            dataStore.setFirstRun(false);
+            mainView.navigateToServerDetailActivity();
+        }
     }
 
     public void detach() {

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import com.chiriacd.datafetch.network.RootFetchInterceptor;
 import com.chiriacd.datafetch.api.RootFetchService;
 import com.chiriacd.datafetch.api.NextPageService;
+import com.chiriacd.datafetch.persistence.DataStore;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import javax.inject.Named;
@@ -60,8 +61,8 @@ public class ApiModule {
     }
 
     @Provides
-    Interceptor interceptor(SharedPreferences preferences) {
-        return new RootFetchInterceptor(preferences);
+    Interceptor interceptor(DataStore dataStore) {
+        return new RootFetchInterceptor(dataStore);
     }
 
     @Provides
