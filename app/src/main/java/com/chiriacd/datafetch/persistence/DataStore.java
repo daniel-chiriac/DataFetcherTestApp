@@ -2,7 +2,6 @@ package com.chiriacd.datafetch.persistence;
 
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.chiriacd.datafetch.injection.app.AppScope;
 import com.chiriacd.datafetch.model.Response;
@@ -17,8 +16,8 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
-import static com.chiriacd.datafetch.Config.DEFAULT_PORT;
-import static com.chiriacd.datafetch.Config.DEFAULT_SERVER_ADDRESS;
+import static com.chiriacd.datafetch.model.Config.DEFAULT_PORT;
+import static com.chiriacd.datafetch.model.Config.DEFAULT_SERVER_ADDRESS;
 
 @AppScope
 public class DataStore {

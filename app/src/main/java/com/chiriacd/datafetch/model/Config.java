@@ -1,4 +1,4 @@
-package com.chiriacd.datafetch;
+package com.chiriacd.datafetch.model;
 
 public class Config {
 

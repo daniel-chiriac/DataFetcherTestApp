@@ -12,35 +12,37 @@ import java.net.SocketTimeoutException;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainPresenter {
 
-    @Inject RootFetchService rootFetchService;
-    @Inject NextPageService nextPageService;
+    RootFetchService rootFetchService;
+    NextPageService nextPageService;
 
     private DataStore dataStore;
     private CodesManager codesManager;
 
     private MainView mainView;
-    private CompositeDisposable disposable;
+    private CompositeDisposable compositeDisposable;
 
     private Response lastResponse;
 
     @Inject
-    public MainPresenter(DataStore dataStore) {
+    public MainPresenter(DataStore dataStore, RootFetchService rootFetchService, NextPageService nextPageService) {
         this.dataStore = dataStore;
-        codesManager = new CodesManager(dataStore.getCodeMap());
-        disposable = new CompositeDisposable();
-        disposable.add(dataStore
-                .dataChangeObservable()
-                .subscribe(dataStore1 -> mainView.updateServerDetails(dataStore1.getServerAddress(), dataStore1.getPort())));
+        this.rootFetchService = rootFetchService;
+        this.nextPageService = nextPageService;
+        codesManager = new CodesManager(dataStore.getCodeMap());//todo perhaps should be moved from here
+        compositeDisposable = new CompositeDisposable();
+
     }
 
     public void refreshData() {
-        disposable.add(rootFetchService.getRoot()
+        compositeDisposable.add(rootFetchService.getRoot()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(rootPage -> nextPageService.getNextPath(rootPage.getNextPath()))
@@ -73,6 +75,9 @@ public class MainPresenter {
         } else {
             mainView.updateServerDetails(dataStore.getServerAddress(), dataStore.getPort());
         }
+        compositeDisposable.add(dataStore
+                .dataChangeObservable()
+                .subscribe(dataStore1 -> mainView.updateServerDetails(dataStore1.getServerAddress(), dataStore1.getPort())));
     }
 
     private void handleRootFetchErrors(Throwable t) {
@@ -85,7 +90,7 @@ public class MainPresenter {
     }
 
     public void detach() {
-        disposable.clear();
+        compositeDisposable.clear();
         mainView = null;
     }
 }

@@ -48,5 +48,4 @@ public class ServerDetailActivity extends AppCompatActivity {
             dataStore.saveServerAddress(address);
         }
     }
-
 }
