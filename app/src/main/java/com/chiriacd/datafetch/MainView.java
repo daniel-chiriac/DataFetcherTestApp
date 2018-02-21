@@ -8,4 +8,8 @@ public interface MainView {
     void navigateToServerDetailActivity();
 
     void updateServerDetails(String serverAddress, int port);
+
+    void showSomethingWentWrong(String localizedMessage);
+
+    void showTimeout();
 }

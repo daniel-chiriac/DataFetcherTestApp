@@ -15,14 +15,14 @@ public class RootFetchInterceptor implements Interceptor {
     private int port;
 
     public RootFetchInterceptor(DataStore dataStore) {
-        dataStore.asObservable().subscribe(this::updateServerDetails);
+        updateServerDetails(dataStore);
+        dataStore.dataChangeObservable().subscribe(this::updateServerDetails);
     }
 
     private void updateServerDetails(DataStore dataStore) {
         server = dataStore.getServerAddress();
         port = dataStore.getPort();
     }
-
 
     @Override
     public Response intercept(Chain chain) throws IOException {

@@ -8,4 +8,6 @@
     <string name="hint_port_view">Enter server port</string>
     <string name="button_update_server">Done</string>
     <string name="server_details">Server: %s \nPort: %d</string>
+    <string name="something_went_wrong">Something went wrong: %s</string>
+    <string name="timeout">Request timeout</string>
 </resources>

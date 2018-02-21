@@ -30,7 +30,7 @@ public class DataStore {
 
     private SharedPreferences preferences;
 
-    PublishSubject<DataStore> subject = PublishSubject.create();
+    private PublishSubject<DataStore> subject = PublishSubject.create();
 
     @Inject public DataStore(SharedPreferences preferences) {
         this.preferences = preferences;
@@ -88,7 +88,7 @@ public class DataStore {
                 .apply();
     }
 
-    public Observable<DataStore> asObservable() {
+    public Observable<DataStore> dataChangeObservable() {
         return subject;
     }
 }

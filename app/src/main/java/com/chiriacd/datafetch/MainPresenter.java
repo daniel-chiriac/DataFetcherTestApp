@@ -8,6 +8,8 @@ import com.chiriacd.datafetch.model.CodesManager;
 import com.chiriacd.datafetch.model.Response;
 import com.chiriacd.datafetch.persistence.DataStore;
 
+import java.net.SocketTimeoutException;
+
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -33,7 +35,7 @@ public class MainPresenter {
         codesManager = new CodesManager(dataStore.getCodeMap());
         disposable = new CompositeDisposable();
         disposable.add(dataStore
-                .asObservable()
+                .dataChangeObservable()
                 .subscribe(dataStore1 -> mainView.updateServerDetails(dataStore1.getServerAddress(), dataStore1.getPort())));
     }
 
@@ -48,7 +50,7 @@ public class MainPresenter {
                         .doOnNext(codesManager::add)
                         .map(codesManager.getData()::get)
                         .doOnNext(response -> lastResponse = response)
-                        .subscribe(mainView::updateResponseView)));
+                        .subscribe(mainView::updateResponseView, this::handleRootFetchErrors), this::handleRootFetchErrors));
     }
 
     public Response getLastResponse() {
@@ -68,7 +70,18 @@ public class MainPresenter {
         if (dataStore.isFirstRun()) {
             dataStore.setFirstRun(false);
             mainView.navigateToServerDetailActivity();
+        } else {
+            mainView.updateServerDetails(dataStore.getServerAddress(), dataStore.getPort());
         }
+    }
+
+    private void handleRootFetchErrors(Throwable t) {
+        if (t instanceof SocketTimeoutException) {
+            mainView.showTimeout();
+        } else {
+            mainView.showSomethingWentWrong(t.getLocalizedMessage());
+        }
+
     }
 
     public void detach() {

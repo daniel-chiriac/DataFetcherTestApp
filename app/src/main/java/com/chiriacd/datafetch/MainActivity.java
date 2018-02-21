@@ -91,6 +91,19 @@ public class MainActivity extends AppCompatActivity implements MainView {
         serverDetailsView.setText(String.format(getString(R.string.server_details), serverAddress, port));
     }
 
+    @Override
+    public void showSomethingWentWrong(String localizedMessage) {
+        //todo probably shouldn't reuse variables intended for other purposes
+        responseCodeView.setText(String.format(getString(R.string.something_went_wrong), localizedMessage));
+        timesFetchedView.setText("");
+    }
+
+    @Override
+    public void showTimeout() {
+        responseCodeView.setText(R.string.timeout);
+        timesFetchedView.setText("");
+    }
+
     private void initUI() {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
